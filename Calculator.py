@@ -16,9 +16,10 @@ class WindowClass(QMainWindow, from_class) :
         
         self.setWindowTitle("PyQt Calculator")
         
-        # TextList manager instance 
+        # Create TextList manager instance 
         self.textList_manager = TextListManager()
-        
+        # Create calculator instance
+        self.calculator = Calculate()
         
         # Number button list
         self.numButtonList = ["numButton_0", "numButton_1", "numButton_2", "numButton_3",
@@ -26,7 +27,7 @@ class WindowClass(QMainWindow, from_class) :
                          "numButton_8", "numButton_9", "dotButton"]
         
         # Calculate button list
-        self.calButtonList = ["addButton", "subButton", "mulButton", "divButton"]
+        self.calButtonList = ["addButton", "subButton", "mulButton", "divButton", "openButton", "closeButton"]
         
     
         # Number button clicked
@@ -40,13 +41,16 @@ class WindowClass(QMainWindow, from_class) :
             button.clicked.connect(lambda ch, btn=button: self.textButtonClicked(btn.text()))
         
         # "=" Button clicked
-        self.sumButton.clicked.connect(lambda: self.sumButtonClicked(self.sumButton.text()))
+        self.sumButton.clicked.connect(self.sumButtonClicked)
         # "AC" Button clicked
         self.acButton.clicked.connect(self.acButtonClicked)
         # "C" Button clicked
         self.cButton.clicked.connect(self.cButtonClicked)
         # Screen reset to "0"
         self.calScreen.setText("0")
+        # Result screen reset
+        self.resultScreen.setText("")
+        self.resultScreen.setReadOnly(True)
 
 
     def textButtonClicked(self, text):
@@ -77,16 +81,39 @@ class WindowClass(QMainWindow, from_class) :
         
         # Screen setText
         self.calScreen.setText(result)
-        
-    
-        
-        
-    def sumButtonClicked(self, text):
-        if (self.textList_manager.textList[-1] != "+-*÷" ):
-            pass #게산식 추가
-        else:
+ 
+ 
+    # '=' button pressed
+    def sumButtonClicked(self):
+        # No Complete 
+        if self.textList_manager.textList[-1] in '+-*÷(':
             pass
+        
+        # Complete
+        else :
+            # 1. Create process List
+            #    combine numbers, confirm minus
+            self.textList_manager.addProcessList()
+            
+            # 2. calculate 후 return 
+            result = self.calculator.infixCalculate(self.textList_manager.processTextList)
+            
+            # 3. Screen setText
+            self.calScreen.setText(str(result))
+            
+            # 4. Add result screen text
+            expression = self.textList_manager.listToString()
+            
+            current_text = self.resultScreen.toPlainText()
+            new_text = current_text + expression + '=' + str(result) + '\n'
+            
+            self.resultScreen.setPlainText(new_text)
+            
+            # 4. textList 초기화
+            self.textList_manager.resetList()
 
+        
+        
 
 
 if __name__ == "__main__":
@@ -97,13 +124,4 @@ if __name__ == "__main__":
     myWindows.show()
     
     sys.exit(app.exec_())
-    
-# numButton_0 ~ numButton_9
-# dotButton
-# sumButton
-# addButton
-# divButton
-# mulButton
-# subButton
-# calScreen
-# resultScreen
+
