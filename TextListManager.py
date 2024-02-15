@@ -31,7 +31,7 @@ class TextListManager:
             # 현재 입력이 피연산자인 경우
             if (len(self.textList) == 1): # 리스트에 초기값이 있는데, 
                 if (self.textList[-1] == "0"): # 리스트 초기값이 0이라면
-                    if (isOperator):
+                    if (isOperator or text == '.'):
                         return True
                     
                     elif (text != "0"): # 입력 텍스트가 0이 아닌 경우에만 append
@@ -91,9 +91,17 @@ class TextListManager:
         combined_list = []
         current_number = ""
 
-        for item in text_list:
-            if item.isdigit():  # 아이템이 숫자 문자열인 경우
-                current_number += item  # 현재 숫자 문자열에 추가
+        for idx, item in enumerate(text_list):
+            token = item
+            
+            if token.isdigit():  # 아이템이 숫자 문자열인 경우
+                current_number += token  # 현재 숫자 문자열에 추가
+            
+            elif token == '.' : # 아이템이 '.'인 경우
+                # 다음 토큰이 '.'이고 현재 토큰이 연산자가 아닌 경우
+                if token[idx-1] not in self.operator:
+                    current_number += token
+            
             else:  # 아이템이 연산자인 경우
                 if current_number:  # 현재 숫자 문자열이 비어있지 않다면
                     combined_list.append(current_number)  # 현재까지의 숫자 문자열을 리스트에 추가
@@ -117,15 +125,17 @@ class TextListManager:
             token = process_list[i]
             next_token = process_list[i + 1] if i + 1 < len(process_list) else None
 
-            # 첫 토큰이 '-'이거나, 연산자 뒤에 '-'가 오는 경우 음수 부호로 처리
+            # 토큰이 '-'이거나, 연산자 뒤에 '-'가 오는 경우 음수 부호로 처리
             if token == '-' and (i == 0 or (i > 0 and process_list[i - 1] in self.operator)):
                 result.append('-' + next_token)
                 i += 2  # 다음 토큰도 처리했으므로 인덱스 2 증가
+                
             elif next_token == '-' and token in self.operator:
                 # 다음 토큰이 '-'이고, 현재 토큰이 연산자인 경우
                 result.append(token)  # 현재 연산자를 결과에 추가
                 result.append('-' + process_list[i + 2])  # 음수 부호와 다음 숫자를 결합
                 i += 3  # 다음 숫자까지 처리했으므로 인덱스 3 증가
+            
             else:
                 result.append(token)
                 i += 1

@@ -19,10 +19,10 @@ class Calculate:
             elif operator == '*': values.append(left * right)
             elif operator == '÷': values.append(left / right)
 
-        # 우선순위
-        def priority(op):
-            if op in ('+', '-'): return 1
-            if op in ('*', '÷'): return 2
+        # operator priority
+        def priority(operator):
+            if operator in ('+', '-'): return 1
+            if operator in ('*', '÷'): return 2
             return 0
 
 
@@ -31,28 +31,32 @@ class Calculate:
         i = 0
 
         while i < len(textList):
-            if textList[i] == ' ':
-                i += 1
-                continue
-            elif textList[i].isdigit():
-                val = 0
-                while i < len(textList) and textList[i].isdigit():
-                    val = (val * 10) + int(textList[i])
-                    i += 1
+            token = textList[i]
+        
+            # operand process
+            if token.lstrip('-').isdigit():
+                # token이 음수 또는 숫자인 경우, 해당 값을 정수로 변환하여 operands 스택에 추가
+                val = int(token)
                 operands.append(val)
-                continue
-            elif textList[i] == '(':
-                operators.append(textList[i])
-            elif textList[i] == ')':
+                i += 1
+            
+            elif token == '(':
+                operators.append(token)
+                i += 1
+            
+            elif token == ')':
                 while operators and operators[-1] != '(':
                     applyOperator(operators, operands)
-                operators.pop()  # Remove '('
-            else:
+                operators.pop()  # '(' 제거
+                i += 1
+            
+            else:  # 연산자 처리
                 while (operators and operators[-1] != '(' and
-                    priority(operators[-1]) >= property(textList[i])):
+                    priority(operators[-1]) >= priority(token)):
                     applyOperator(operators, operands)
-                operators.append(textList[i])
-            i += 1
+                operators.append(token)
+                i += 1
+
 
         while operators:
             applyOperator(operators, operands)
