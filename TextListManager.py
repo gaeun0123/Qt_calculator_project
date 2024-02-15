@@ -7,16 +7,15 @@ class TextListManager:
         self.operator = ["+", "-", "*", "÷"]
     
     
-    # Judgment condition and correction
     def preprocess_text(self, text):
         
-        # Judgment Operator, Operand 
-        isOperator = text in self.operator # 새로 들어온 텍스트가 연산자인가?
-        beforeIsOperator = self.textList[-1] in self.operator # 전 텍스트가 연산자인가?
+        # Judgment Operator or Operand 
+        isOperator = text in self.operator                      # 새로 들어온 텍스트가 연산자인가?
+        beforeIsOperator = self.textList[-1] in self.operator   # 전 텍스트가 연산자인가?
         
         # Operator process       
-        if isOperator and beforeIsOperator: # 새로 들어온 텍스트도 연산자이고, 전 텍스트도 연산자이면
-            if (text == self.textList[-1]): # 두 연산자가 같다면 리스트에 추가 안함
+        if isOperator and beforeIsOperator:                     # 새로 들어온 텍스트도 연산자이고, 전 텍스트도 연산자이면
+            if (text == self.textList[-1]):                     # 두 연산자가 같다면 리스트에 추가 안함
                 return False
             else: # 두 연산자가 다르다면
                 if (text == '-'): # 들어온 텍스트가 '-'라면
@@ -48,7 +47,7 @@ class TextListManager:
                 return True
             
         
-    # text input list 
+ 
     def addList(self, text):
         # Text must pass, append
         if (self.preprocess_text(text)):
@@ -58,7 +57,7 @@ class TextListManager:
         print(self.textList)
         
     
-    # text Input remove list
+
     def removeList(self):
         if (len(self.textList) == 1 and self.textList[-1] == 0):
             self.textList = ["0"]
@@ -71,12 +70,12 @@ class TextListManager:
                 self.textList = ["0"]
     
     
-    # All text delete
+ 
     def resetList(self):
         self.textList = ["0"]
     
     
-    # Text convert to String
+  
     def listToString(self):
         result = ""
         
@@ -86,7 +85,7 @@ class TextListManager:
         return result
     
     
-    # Combine text numbers (operand)
+   
     def combineNumbers(self, text_list):
         combined_list = []
         current_number = ""
@@ -111,7 +110,7 @@ class TextListManager:
         if current_number:  # 마지막에 남은 숫자 문자열이 있다면 리스트에 추가
             combined_list.append(current_number)
 
-        print(combined_list)
+        print(f"token list :{combined_list}")
         return combined_list
     
     
@@ -140,12 +139,12 @@ class TextListManager:
                 result.append(token)
                 i += 1
 
-        print(result)
+        print(f"include nagative token list : {result}")
         return result
 
     
     
-    # 리스트를 숫자 합치고, 마이너스 부호 판단해서 최종 list 생성
+    # 최종 list 생성
     def addProcessList(self):
         self.processTextList = self.combineNumbers(self.textList)
         self.processTextList = self.confirmMinus(self.processTextList)
