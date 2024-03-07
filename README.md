@@ -1,10 +1,11 @@
-# Calculator
+# Topic
   `qt`로 만든 나만의 ***' 계산기 '*** 프로그램
 
 
 
 <br>
 
+# Structure
 **Main**
 
 - `WindowClass`
@@ -28,3 +29,7 @@
 → 입력 계산식 토큰화 후 리스트 생성
 
 → 음수 부호 전처리한 리스트 생성
+
+# UI 설계도
+![qt_calculator drawio](https://github.com/gaeun0123/Qt_calculator_project/assets/102429136/998d6a79-e95a-4145-93bb-373f46ceef39)
+
